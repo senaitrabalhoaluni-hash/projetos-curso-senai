@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParkSys - Controle de Estacionamento</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="bg-overlay"></div>
+
+    <!-- Painel Principal Exibido Direta e Automaticamente -->
+    <div id="app-screen">
+        <header class="glass-header">
+            <div class="brand-header">
+                <span class="icon">🏎️</span>
+                <h1>ParkSys <span>VIP</span></h1>
+            </div>
+            <div class="user-info">
+                <span>Painel Operacional</span>
+            </div>
+        </header>
+
+        <nav class="glass-nav">
+            <button onclick="showTab('clientes')" id="btn-tab-clientes" class="nav-btn active">👤 Clientes (Mestre)</button>
+            <button onclick="showTab('veiculos')" id="btn-tab-veiculos" class="nav-btn">🚘 Veículos (Dependente)</button>
+            <button onclick="showTab('transacoes')" id="btn-tab-transacoes" class="nav-btn">📋 Registros de Pátio</button>
+        </nav>
+
+        <main class="content-area">
+            <!-- Módulo Clientes -->
+            <section id="tab-clientes" class="tab-content glass-card">
+                <h2>Gerenciamento de Clientes</h2>
+                <form id="form-cliente" class="form-grid">
+                    <input type="text" id="cli-nome" placeholder="Nome Completo" required>
+                    <input type="text" id="cli-cpf" placeholder="CPF (Será Encriptado)" required>
+                    <input type="text" id="cli-tel" placeholder="Telefone / Whatsapp" required>
+                    <button type="submit" class="btn-success">+ Cadastrar Cliente</button>
+                </form>
+                <div class="search-bar">
+                    <input type="text" id="busca-cliente" oninput="carregarClientes()" placeholder="🔍 Buscar cliente por nome...">
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>ID</th><th>Nome</th><th>Telefone</th><th>Ações</th></tr>
+                        </thead>
+                        <tbody id="tbl-clientes"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Módulo Veículos -->
+            <section id="tab-veiculos" class="tab-content glass-card" style="display: none;">
+                <h2>Gerenciamento de Veículos</h2>
+                <form id="form-veiculo" class="form-grid">
+                    <input type="text" id="vei-placa" placeholder="Placa (ex: ABC-1234)" required>
+                    <input type="text" id="vei-modelo" placeholder="Modelo (ex: Toyota Corolla)" required>
+                    <input type="text" id="vei-cor" placeholder="Cor" required>
+                    <select id="vei-cliente" required>
+                        <option value="">Vincular a um Cliente (Dono)...</option>
+                    </select>
+                    <button type="submit" class="btn-success">+ Vincular Veículo</button>
+                </form>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>ID</th><th>Placa</th><th>Modelo</th><th>Cor</th><th>Dono (Cliente)</th></tr>
+                        </thead>
+                        <tbody id="tbl-veiculos"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Módulo Transações -->
+            <section id="tab-transacoes" class="tab-content glass-card" style="display: none;">
+                <h2>Controle de Entradas e Saídas</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Data/Hora Entrada</th>
+                                <th>Cliente</th>
+                                <th>Veículo</th>
+                                <th>Status</th>
+                                <th>Valor Cobrado</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbl-transacoes"></tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

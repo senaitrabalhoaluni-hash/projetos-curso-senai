@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal EcoEscola | Gestão Sustentável</title>
+  <!-- Fontes do Google para um visual profissional -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="logo">
+      <div class="logo-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.4 19 2c1 2 2 4.12 2 9 0 6-4 9-10 9z"></path><path d="M11 20v-8.4a4.5 4.5 0 0 1 1.5-3.3"></path></svg>
+      </div>
+      <div>
+        <h1>Escola<span>Verde</span></h1>
+        <p class="tagline">Gincana de Reciclagem & Sustentabilidade</p>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <div class="search-box">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" id="searchInput" placeholder="Buscar turma, período ou material..." onkeyup="filtrarTurmas()">
+      </div>
+      <button class="btn-login" id="btnAuthToggle" onclick="abrirModalOuSair()">Área do Coordenador 🔒</button>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- Cards de Métricas -->
+    <section class="cards-grid">
+      <div class="card">
+        <span class="card-tag">Líder Geral</span>
+        <h3 id="turmaLider">Carregando...</h3>
+        <span class="card-sub" id="liderPontos">0 pts</span>
+      </div>
+      <div class="card">
+        <span class="card-tag">Engajamento</span>
+        <h3 id="totalPontosGeral">0</h3>
+        <span class="card-sub">Pontos arrecadados</span>
+      </div>
+      <div class="card">
+        <span class="card-tag">Participação</span>
+        <h3 id="totalTurmas">0</h3>
+        <span class="card-sub">Turmas ativas</span>
+      </div>
+    </section>
+
+    <!-- Dashboard Principal -->
+    <section class="dashboard-grid">
+      <div class="panel">
+        <h2>Ranking Geral das Turmas</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Posição</th>
+              <th>Turma</th>
+              <th>Período</th>
+              <th>Pontuação</th>
+            </tr>
+          </thead>
+          <tbody id="corpoTabela"></tbody>
+        </table>
+      </div>
+
+      <div class="panel">
+        <h2>Visão Gráfica de Pontos</h2>
+        <div class="chart-container">
+          <canvas id="graficoPontos"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- Extrato de Reciclagem (O que cada sala arrecadou) -->
+    <section class="panel">
+      <h2>Histórico de Ações & Materiais Reciclados ♻️</h2>
+      <p class="subtitle">Confira em detalhes o que cada turma arrecadou (papelão, pilhas, PET, óleo, etc.)</p>
+      <div class="history-list" id="listaHistorico">
+        <!-- Renderizado dinamicamente via JS -->
+      </div>
+    </section>
+
+    <!-- Painel do Coordenador (Só aparece quando logado) -->
+    <section class="panel form-panel hidden" id="painelCoordenador">
+      <div class="panel-header-coord">
+        <h2>Painel do Coordenador — Lançar Pontos 📝</h2>
+        <span class="badge-autenticado">Sessão Autenticada</span>
+      </div>
+      <form id="formPontos" onsubmit="adicionarAcao(event)">
+        <div class="form-group">
+          <label for="selectTurma">Selecione a Turma:</label>
+          <select id="selectTurma" required></select>
+        </div>
+        <div class="form-group">
+          <label for="qtdPontos">Pontos a Adicionar:</label>
+          <input type="number" id="qtdPontos" placeholder="Ex: 25" required min="1">
+        </div>
+        <div class="form-group">
+          <label for="descricaoAcao">Material / Ação Sustentável:</label>
+          <input type="text" id="descricaoAcao" placeholder="Ex: Entregou 20kg de pilhas velhas" required>
+        </div>
+        <button type="submit" class="btn-submit">Confirmar Lançamento</button>
+      </form>
+    </section>
+
+  </main>
+
+  <!-- Modal de Login da Coordenadoria -->
+  <div class="modal-overlay hidden" id="modalLogin">
+    <div class="modal">
+      <h2>Acesso Restrito 🔐</h2>
+      <p>Digite as credenciais da coordenação para realizar lançamentos.</p>
+      <form onsubmit="fazerLogin(event)">
+        <div class="form-group">
+          <label>E-mail:</label>
+          <input type="email" id="emailLogin" placeholder="coordenacao@escola.com" required>
+        </div>
+        <div class="form-group">
+          <label>Senha:</label>
+          <input type="password" id="senhaLogin" placeholder="••••••••" required>
+        </div>
+        <p class="login-hint">Dica para o teste: <strong>admin@escola.com</strong> / senha: <strong>123456</strong></p>
+        <div class="modal-actions">
+          <button type="button" class="btn-cancel" onclick="fecharModal()">Cancelar</button>
+          <button type="submit" class="btn-submit">Entrar no Sistema</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
